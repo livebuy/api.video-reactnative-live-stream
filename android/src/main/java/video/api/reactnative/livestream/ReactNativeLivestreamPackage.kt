@@ -1,4 +1,4 @@
-package com.apivideoreactnativelivestream
+package video.api.reactnative.livestream
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

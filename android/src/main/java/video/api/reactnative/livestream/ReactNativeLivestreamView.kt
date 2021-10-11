@@ -1,5 +1,4 @@
-
-package com.apivideoreactnativelivestream
+package video.api.reactnative.livestream
 
 import android.content.Context
 import androidx.constraintlayout.widget.ConstraintLayout

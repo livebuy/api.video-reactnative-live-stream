@@ -11,29 +11,16 @@ type ReactNativeLivestreamProps = {
   liveStreamKey: string;
   rtmpServerUrl?: string;
   video: {
+    bitrate: number;
     fps: number;
     resolution: '240p' | '360p' | '480p' | '720p' | '1080p' | '2160p';
-    bitrate?: number;
-    camera?: 'front' | 'back';
-    orientation?: 'landscape' | 'portrait';
   };
-  audio?: {
-    muted?: boolean;
-    bitrate?: number;
+  audio: {
+    bitrate: number;
+    samplerate: 8000 | 16000 | 32000 | 44100 | 48000;
+    isStereo: boolean;
   };
-};
-
-type ReactNativeLivestreamNativeProps = {
-  style: ViewStyle;
-  liveStreamKey: string;
-  rtmpServerUrl?: string;
-  videoFps: number;
-  videoResolution: '240p' | '360p' | '480p' | '720p' | '1080p' | '2160p';
-  videoBitrate?: number;
-  videoCamera?: 'front' | 'back';
-  videoOrientation?: 'landscape' | 'portrait';
-  audioMuted?: boolean;
-  audioBitrate?: number;
+  camera?: 'front' | 'back';
 };
 
 export type ReactNativeLivestreamMethods = {
@@ -41,9 +28,10 @@ export type ReactNativeLivestreamMethods = {
   stopStreaming: () => void;
   enableAudio: () => void;
   disableAudio: () => void;
+  switchCamera: () => void;
 };
 
-export const ReactNativeLivestreamViewNative = requireNativeComponent<ReactNativeLivestreamNativeProps>(
+export const ReactNativeLivestreamViewNative = requireNativeComponent<ReactNativeLivestreamProps>(
   'ReactNativeLivestreamView'
 );
 
@@ -52,7 +40,7 @@ ReactNativeLivestreamViewNative.displayName = 'ReactNativeLivestreamViewNative';
 const LivestreamView = forwardRef<
   ReactNativeLivestreamMethods,
   ReactNativeLivestreamProps
->(({ style, video, rtmpServerUrl, liveStreamKey, audio }, forwardedRef) => {
+>(({ style, rtmpServerUrl, liveStreamKey, video, audio, camera }, forwardedRef) => {
   const nativeRef = useRef<typeof ReactNativeLivestreamViewNative | null>(null);
 
   useImperativeHandle(forwardedRef, () => ({
@@ -88,18 +76,22 @@ const LivestreamView = forwardRef<
         []
       );
     },
+    switchCamera: () => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(nativeRef.current),
+        UIManager.getViewManagerConfig('ReactNativeLivestreamView').Commands
+          .switchCameraFromManager,
+        []
+      );
+    },
   }));
 
   return (
     <ReactNativeLivestreamViewNative
       style={style}
-      videoCamera={video.camera}
-      videoResolution={video.resolution}
-      videoFps={video.fps}
-      videoBitrate={video.bitrate}
-      videoOrientation={video.orientation}
-      audioMuted={audio?.muted}
-      audioBitrate={audio?.bitrate}
+      video={video}
+      audio={audio}
+      camera={camera}
       liveStreamKey={liveStreamKey}
       rtmpServerUrl={rtmpServerUrl}
       ref={nativeRef as any}

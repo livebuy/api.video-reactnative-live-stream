@@ -20,9 +20,6 @@ export default function App() {
   const [audioMuted, setAudioMuted] = React.useState(false);
   const [res, setRes] = React.useState<'360p' | '720p'>('360p');
   const [camera, setCamera] = React.useState<'front' | 'back'>('back');
-  const [orientation, setOrientation] = React.useState<
-    'landscape' | 'portrait'
-  >('landscape');
 
   // const requestPermissions = async () => {
   //   try {
@@ -58,10 +55,9 @@ export default function App() {
         style={{ flex: 1, backgroundColor: 'black', alignSelf: 'stretch' }}
         ref={ref}
         video={{
+          bitrate: 3000000,
           fps: 30,
-          resolution: res,
-          camera,
-          orientation,
+          resolution: res
         }}
         liveStreamKey={
           Platform.OS === 'android'
@@ -69,8 +65,11 @@ export default function App() {
             : 'd08c582e-e251-4f9e-9894-8c8d69755d45'
         }
         audio={{
-          muted: audioMuted,
+          bitrate: 128000,
+          sampleRate: 44100,
+          isStereo: true
         }}
+        camera={camera}
       />
       <View style={{ position: 'absolute', bottom: 40 }}>
         <TouchableOpacity
@@ -92,23 +91,6 @@ export default function App() {
           }}
         />
       </View>
-      <View style={{ position: 'absolute', bottom: 40, right: 20 }}>
-        <TouchableOpacity
-          style={{
-            borderRadius: 50,
-            backgroundColor: 'blue',
-            width: 50,
-            height: 50,
-          }}
-          onPress={() => {
-            if (audioMuted) {
-              setAudioMuted(false);
-            } else {
-              setAudioMuted(true);
-            }
-          }}
-        />
-      </View>
       <View style={{ position: 'absolute', bottom: 40, left: 20 }}>
         <TouchableOpacity
           style={{
@@ -122,6 +104,23 @@ export default function App() {
               setRes('720p');
             } else {
               setRes('360p');
+            }
+          }}
+        />
+      </View>
+      <View style={{ position: 'absolute', bottom: 40, right: 20 }}>
+        <TouchableOpacity
+          style={{
+            borderRadius: 50,
+            backgroundColor: 'blue',
+            width: 50,
+            height: 50,
+          }}
+          onPress={() => {
+            if (audioMuted) {
+              ref.current?.disableAudio();
+            } else {
+              ref.current?.enableAudio();
             }
           }}
         />
@@ -143,23 +142,6 @@ export default function App() {
           }}
         />
       </View>
-      <View style={{ position: 'absolute', bottom: 110, left: 20 }}>
-        <TouchableOpacity
-          style={{
-            borderRadius: 50,
-            backgroundColor: 'purple',
-            width: 50,
-            height: 50,
-          }}
-          onPress={() => {
-            if (orientation === 'portrait') {
-              setOrientation('landscape');
-            } else {
-              setOrientation('portrait');
-            }
-          }}
-        />
-      </View>
       <View
         style={{
           position: 'absolute',
@@ -170,11 +152,9 @@ export default function App() {
         }}
       >
         <Text style={{ color: 'white' }}>{`Current Settings:`}</Text>
-        <Text style={{ color: 'white' }}>{`FPS: ${30}`}</Text>
-        <Text style={{ color: 'white' }}>{`Resolution: ${res}`}</Text>
         <Text style={{ color: 'white' }}>{`Camera: ${camera}`}</Text>
-        <Text style={{ color: 'white' }}>{`Orientation: ${orientation}`}</Text>
         <Text style={{ color: 'white' }}>{`Muted: ${audioMuted}`}</Text>
+        <Text style={{ color: 'white' }}>{`Resolution: ${res}`}</Text>
       </View>
     </View>
   );

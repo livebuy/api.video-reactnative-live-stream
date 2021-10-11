@@ -1,4 +1,4 @@
-package com.example.apivideoreactnativelivestream;
+package video.api.reactnative.livestream.app;
 
 import com.facebook.react.ReactActivity;
 
