@@ -5,9 +5,10 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
+import video.api.livestream.models.AudioConfig
+import video.api.livestream.models.VideoConfig
 import video.api.reactnative.livestream.utils.getCameraFacing
-import video.api.reactnative.livestream.utils.toAudioConfig
-import video.api.reactnative.livestream.utils.toVideoConfig
+import video.api.reactnative.livestream.utils.getResolution
 
 
 class ReactNativeLiveStreamViewManager : SimpleViewManager<ReactNativeLiveStreamView>() {
@@ -26,20 +27,14 @@ class ReactNativeLiveStreamViewManager : SimpleViewManager<ReactNativeLiveStream
 
     when (commandId) {
       ViewProps.Commands.START_STREAMING.ordinal -> {
-        val requestId = args!!.getInt(0)
-        val streamKey = args.getString(1)
         val url = try {
-          args.getString(2)
+          args!!.getString(1)
         } catch (e: Exception) {
           null
         }
-        view.startStreaming(requestId, streamKey, url)
+        view.startStreaming(args!!.getString(0), url)
       }
       ViewProps.Commands.STOP_STREAMING.ordinal -> view.stopStreaming()
-      ViewProps.Commands.ZOOM_RATIO.ordinal -> {
-        val zoomRatio = args!!.getDouble(0)
-        view.zoomRatio = zoomRatio.toFloat()
-      }
       else -> {
         throw IllegalArgumentException("Unsupported command %d received by %s. $commandId")
       }
@@ -56,16 +51,22 @@ class ReactNativeLiveStreamViewManager : SimpleViewManager<ReactNativeLiveStream
 
   @ReactProp(name = ViewProps.VIDEO_CONFIG)
   fun setVideoConfig(view: ReactNativeLiveStreamView, videoMap: ReadableMap) {
-    if (view.isStreaming) {
-      view.videoBitrate = videoMap.getInt(ViewProps.BITRATE)
-    } else {
-      view.videoConfig = videoMap.toVideoConfig()
-    }
+    view.videoConfig = VideoConfig(
+      bitrate = videoMap.getInt(ViewProps.BITRATE),
+      resolution = videoMap.getString(ViewProps.RESOLUTION)?.getResolution()!!,
+      fps = videoMap.getInt(ViewProps.FPS)
+    )
   }
 
   @ReactProp(name = ViewProps.AUDIO_CONFIG)
   fun setAudioConfig(view: ReactNativeLiveStreamView, audioMap: ReadableMap) {
-    view.audioConfig = audioMap.toAudioConfig()
+    view.audioConfig = AudioConfig(
+      bitrate = audioMap.getInt(ViewProps.BITRATE),
+      sampleRate = audioMap.getInt(ViewProps.SAMPLE_RATE),
+      stereo = audioMap.getBoolean(ViewProps.IS_STEREO),
+      echoCanceler = true,
+      noiseSuppressor = true
+    )
   }
 
   @ReactProp(name = ViewProps.CAMERA)
@@ -76,15 +77,5 @@ class ReactNativeLiveStreamViewManager : SimpleViewManager<ReactNativeLiveStream
   @ReactProp(name = ViewProps.IS_MUTED)
   fun isMuted(view: ReactNativeLiveStreamView, isMuted: Boolean) {
     view.isMuted = isMuted
-  }
-
-  @ReactProp(name = ViewProps.NATIVE_ZOOM_ENABLED)
-  fun enablePinchedZoom(view: ReactNativeLiveStreamView, enablePinchedZoom: Boolean) {
-    view.enablePinchedZoom = enablePinchedZoom
-  }
-
-  @ReactProp(name = ViewProps.ZOOM_RATIO)
-  fun zoomRatio(view: ReactNativeLiveStreamView, zoomRatio: Double) {
-    view.zoomRatio = zoomRatio.toFloat()
   }
 }
