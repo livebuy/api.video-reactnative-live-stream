@@ -28,11 +28,11 @@ class ReactNativeLiveStreamViewManager : SimpleViewManager<ReactNativeLiveStream
     when (commandId) {
       ViewProps.Commands.START_STREAMING.ordinal -> {
         val url = try {
-          args!!.getString(1)
+          args!!.getString(2)
         } catch (e: Exception) {
           null
         }
-        view.startStreaming(args!!.getString(0), url)
+        view.startStreaming(args!!.getString(1), url)
       }
       ViewProps.Commands.STOP_STREAMING.ordinal -> view.stopStreaming()
       else -> {
