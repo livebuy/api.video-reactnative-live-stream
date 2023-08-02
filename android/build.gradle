@@ -127,10 +127,10 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 configurations.all {
   resolutionStrategy.eachDependency { DependencyResolveDetails details ->
     if (details.requested.group == 'io.github.thibaultbee' && details.requested.name == 'streampack') {
-      details.useTarget group: 'com.github.livebuy.StreamPack', name: 'streampack', version: '2.5.6'
+      details.useTarget group: 'com.github.livebuy.StreamPack', name: 'streampack', version: '2.5.7'
     }
     if (details.requested.group == 'io.github.thibaultbee' && details.requested.name == 'streampack-extension-rtmp') {
-      details.useTarget group: 'com.github.livebuy.StreamPack', name: 'streampack-extension-rtmp', version: '2.5.6'
+      details.useTarget group: 'com.github.livebuy.StreamPack', name: 'streampack-extension-rtmp', version: '2.5.7'
     }
   }
 }
