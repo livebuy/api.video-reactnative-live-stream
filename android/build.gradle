@@ -122,8 +122,6 @@ dependencies {
   implementation "com.facebook.react:react-native:+"
 
   implementation files('libs/rtmpdroid-16kb.jar')
-  compileOnly("video.api:rtmpdroid:1.2.1-packed")
-
 
   implementation("video.api:android-live-stream:1.4.3") {
     exclude group: 'video.api', module: 'rtmpdroid'
