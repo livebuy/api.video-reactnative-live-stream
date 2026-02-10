@@ -13,8 +13,8 @@
 
 
 // MARK: Swift classes in ObjC++
-#if __has_include("react-native-livestream/react_native_livestream-Swift.h")
-#import "react-native-livestream/react_native_livestream-Swift.h"
+#if __has_include(<react_native_livestream/react_native_livestream-Swift.h>)
+#import <react_native_livestream/react_native_livestream-Swift.h>
 #else
 #import "react_native_livestream-Swift.h"
 #endif
