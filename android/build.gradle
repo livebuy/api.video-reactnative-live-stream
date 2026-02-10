@@ -121,7 +121,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
 
-  implementation("com.github.livebuy:api.video-rtmpdroid:de91497")
+  implementation(files("libs/lib-packed-release.aar"))
 
   implementation("video.api:android-live-stream:1.4.3") {
     exclude group: 'video.api', module: 'rtmpdroid'
