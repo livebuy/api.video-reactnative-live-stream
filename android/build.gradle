@@ -121,7 +121,10 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
 
-  implementation(files("libs/lib-packed-release.aar"))
+  // The .so files are included via jniLibs.
+  // Keep the Java API dependency as compileOnly:
+  compileOnly("video.api:rtmpdroid:1.2.1-packed")
+
 
   implementation("video.api:android-live-stream:1.4.3") {
     exclude group: 'video.api', module: 'rtmpdroid'
